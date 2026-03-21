@@ -4,14 +4,14 @@ import { useState } from 'react';
 import Button from '../UI/Button';
 
 function ExpenseForm({ submitButtonLabel, onCancel, onSubmit }) {
-  const [inputValue, setinputValue] = useState({
+  const [inputValues, setinputValues] = useState({
     amount: '',
     date: '',
     description: '',
   });
 
   function inputChangedhandler(inputIdentifier, enteredValue) {
-    setinputValue((currentInputValues) => {
+    setinputValues((currentInputValues) => {
       return {
         ...currentInputValues,
         [inputIdentifier]: enteredValue,
@@ -19,7 +19,15 @@ function ExpenseForm({ submitButtonLabel, onCancel, onSubmit }) {
     });
   }
 
-  function submitHandler() {}
+  function submitHandler() {
+    const expenseData = {
+      amount: +inputValues.amount, //converts string to number
+      date: new Date(inputValues.date),
+      description: inputValues.description,
+    };
+
+    onSubmit(expenseData);
+  }
 
   return (
     <View style={styles.form}>
@@ -31,7 +39,7 @@ function ExpenseForm({ submitButtonLabel, onCancel, onSubmit }) {
           textInputConfig={{
             keyboardType: 'decimal-pad',
             onChangeText: inputChangedhandler.bind(this, 'amount'),
-            value: inputValue.amount,
+            value: inputValues.amount,
           }}
         />
         <Input
@@ -41,7 +49,7 @@ function ExpenseForm({ submitButtonLabel, onCancel, onSubmit }) {
             placeholder: 'YYYY-MM-DD',
             maxLength: 10,
             onChangeText: inputChangedhandler.bind(this, 'date'),
-            value: inputValue.date,
+            value: inputValues.date,
           }}
         />
       </View>
@@ -50,7 +58,7 @@ function ExpenseForm({ submitButtonLabel, onCancel, onSubmit }) {
         textInputConfig={{
           multiline: true,
           onChangeText: inputChangedhandler.bind(this, 'description'),
-          value: inputValue.description,
+          value: inputValues.description,
           // autoCorrect: false,
           // autoCapitalize: 'sentences'
         }}
